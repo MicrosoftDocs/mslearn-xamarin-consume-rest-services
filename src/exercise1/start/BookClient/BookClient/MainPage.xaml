@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:BookClient"
+             x:Class="BookClient.MainPage"
+             Title="Library Books" >
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Add New" Icon="ic_action_new.png" Clicked="OnAddNewBook" />
+        <ToolbarItem Text="Refresh" Icon="ic_autorenew.png" Clicked="OnRefresh" />
+    </ContentPage.ToolbarItems>
+
+    <ListView ItemsSource="{Binding}"
+          ItemTapped="OnEditBook">
+        <ListView.ItemTemplate>
+            <DataTemplate>
+                <TextCell Text="{Binding Title}" Detail="{Binding Genre}">
+                    <TextCell.ContextActions>
+                        <MenuItem Clicked="OnDeleteBook"
+                CommandParameter="{Binding}"
+                Text="Delete" IsDestructive="True" />
+                    </TextCell.ContextActions>
+                </TextCell>
+            </DataTemplate>
+        </ListView.ItemTemplate>
+    </ListView>
+</ContentPage>
