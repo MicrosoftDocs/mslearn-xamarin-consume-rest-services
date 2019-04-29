@@ -97,7 +97,6 @@ namespace BookClient
                     else
                     {
                         Book book = await manager.Add(title, author, genre);
-                        books.Add(book);
                     }
 
                     await Navigation.PopModalAsync();
