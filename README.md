@@ -1,7 +1,6 @@
 # Microsoft Learn: Consume REST-based web services in Xamarin apps
 
-[//]: # (TODO: Link back to Microsoft Learn module.)
-This project contains the source code for the **Consume REST-based web services in Xamarin apps** Microsoft Learn module.
+This project contains the source code for the [**Consume REST-based web services in Xamarin apps**](https://docs.microsoft.com/learn/modules/consume-rest-services/) Microsoft Learn module.
 
 # Contributing
 
