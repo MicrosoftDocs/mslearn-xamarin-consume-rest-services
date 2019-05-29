@@ -127,8 +127,13 @@ namespace BookService.Controllers
 
                 var json = JsonConvert.SerializeObject(book);
                 
-                HttpContext.Response.ContentType = "application/json";
-                return new HttpResponseMessage(HttpStatusCode.Created);
+                HttpContext.Response.ContentType = "application/json";                
+                var resp = new HttpResponseMessage(HttpStatusCode.Created);
+                resp.Content = new StringContent(json);
+
+                resp.Headers.Location = new UriBuilder(Request.Scheme, Request.Host.Host, Request.Host.Port ?? -1, book.ISBN).Uri;
+
+                return resp;
             }
             catch (Exception ex)
             {
