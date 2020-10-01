@@ -11,10 +11,22 @@ namespace BookClient.Data
     {
         const string Url = "{Url from before}/api/books/";
         private string authorizationKey;
+        private static HttpClient client;
+
+        public static HttpClient GetClientInstance()
+        {
+            if (client == null)
+            {
+                client = new HttpClient();
+            }
+
+            return client;
+        }
 
         private async Task<HttpClient> GetClient()
         {
-            HttpClient client = new HttpClient();
+            HttpClient client = BookManager.GetClientInstance();
+
             if (string.IsNullOrEmpty(authorizationKey))
             {
                 authorizationKey = await client.GetStringAsync(Url + "login");
