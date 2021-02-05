@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Net.Http;
-using System.Threading;
 using BookService.Models;
 using Microsoft.AspNetCore.Http;
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace BookService.Controllers
 {
+    [ApiController]
     [Route("api/[controller]")]
     public class BooksController : BaseController
     {
@@ -53,7 +52,7 @@ namespace BookService.Controllers
         }
 
         [HttpPut("{isbn}")]
-        public async Task<HttpResponseMessage> Put(string isbn, [FromBody] Book book)
+        public HttpResponseMessage Put(string isbn, [FromBody] Book book)
         {
             try
             {
@@ -74,7 +73,7 @@ namespace BookService.Controllers
                 }
 
                 Console.WriteLine($"PUT /api/books/{isbn}");
-                Console.WriteLine(JsonConvert.SerializeObject(book));
+                Console.WriteLine(JsonSerializer.Serialize(book));
 
                 var existingBook = UserBooks.SingleOrDefault(x => x.ISBN == isbn);
                 if (existingBook != null)
@@ -94,7 +93,7 @@ namespace BookService.Controllers
         }
 
         [HttpPost]
-        public async Task<HttpResponseMessage> Post([FromBody] Book book)
+        public HttpResponseMessage Post([FromBody] Book book)
         {
             try
             {
@@ -109,7 +108,7 @@ namespace BookService.Controllers
                     return new HttpResponseMessage(HttpStatusCode.BadRequest);
                 }
                 Console.WriteLine($"POST /api/books");
-                Console.WriteLine(JsonConvert.SerializeObject(book));
+                Console.WriteLine(JsonSerializer.Serialize(book));
 
                 book.ISBN = BookFactory.CreateISBN();
 
@@ -125,11 +124,13 @@ namespace BookService.Controllers
 
                 UserBooks.Add(book);
 
-                var json = JsonConvert.SerializeObject(book);
+                var json = JsonSerializer.Serialize(book);
                 
-                HttpContext.Response.ContentType = "application/json";                
-                var resp = new HttpResponseMessage(HttpStatusCode.Created);
-                resp.Content = new StringContent(json);
+                HttpContext.Response.ContentType = "application/json";
+                var resp = new HttpResponseMessage(HttpStatusCode.Created)
+                {
+                    Content = new StringContent(json)
+                };
 
                 resp.Headers.Location = new UriBuilder(Request.Scheme, Request.Host.Host, Request.Host.Port ?? -1, book.ISBN).Uri;
 

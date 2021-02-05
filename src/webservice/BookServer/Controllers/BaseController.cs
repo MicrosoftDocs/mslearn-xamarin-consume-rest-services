@@ -6,8 +6,7 @@ using BookService.Models;
 
 namespace BookService.Controllers
 {
-    [Route("api/[controller]")]
-    public class BaseController : Controller
+    public class BaseController : ControllerBase
     {
         protected List<Book> UserBooks
         {

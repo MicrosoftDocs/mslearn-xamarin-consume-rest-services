@@ -4,8 +4,9 @@ using BookService.Models;
 
 namespace BookService.Controllers
 {
+    [ApiController]
     [Route("api/books/[controller]")]
-    public class LoginController : Controller
+    public class LoginController : ControllerBase
     {
         
         [HttpGet]
@@ -17,11 +18,11 @@ namespace BookService.Controllers
 
                 BookFactory.Initialize(authorizationToken);
                 
-                return Json(authorizationToken);
+                return Ok(authorizationToken);
             }
             catch (Exception ex)
             {
-                return Json(ex.Message);
+                return Problem(ex.Message);
             }
         }
     }
