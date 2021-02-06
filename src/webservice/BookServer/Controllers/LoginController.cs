@@ -18,11 +18,11 @@ namespace BookService.Controllers
 
                 BookFactory.Initialize(authorizationToken);
                 
-                return Ok(authorizationToken);
+                return new JsonResult(authorizationToken);
             }
             catch (Exception ex)
             {
-                return Problem(ex.Message);
+                return new JsonResult(ex.Message);
             }
         }
     }

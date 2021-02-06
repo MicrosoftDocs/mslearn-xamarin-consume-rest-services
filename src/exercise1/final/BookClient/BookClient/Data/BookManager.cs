@@ -10,8 +10,8 @@ namespace BookClient.Data
 {
     public class BookManager
     {
-        static string BaseAddress = DeviceInfo.Platform == DevicePlatform.Android ? "http://10.0.2.2:5000" : "http://localhost:5000";
-        static string Url = $"{BaseAddress}/api/books/";
+        static readonly string BaseAddress = "{Url from before}";
+        static readonly string Url = $"{BaseAddress}/api/books/";
         private string authorizationKey;
 
         private async Task<HttpClient> GetClient()
