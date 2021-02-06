@@ -4,12 +4,14 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Xamarin.Essentials;
 
 namespace BookClient.Data
 {
     public class BookManager
     {
-        const string Url = "{Url from before}/api/books/";
+        static string BaseAddress = DeviceInfo.Platform == DevicePlatform.Android ? "http://10.0.2.2:5000" : "http://localhost:5000";
+        static string Url = $"{BaseAddress}/api/books/";
         private string authorizationKey;
 
         private async Task<HttpClient> GetClient()
