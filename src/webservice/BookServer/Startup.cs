@@ -33,7 +33,7 @@ namespace BookService
 #if !DEBUG
             app.UseHttpsRedirection();
 #endif
-
+            app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseRouting();
 
