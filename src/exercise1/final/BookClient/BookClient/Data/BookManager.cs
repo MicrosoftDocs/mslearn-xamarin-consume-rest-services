@@ -19,7 +19,7 @@ namespace BookClient.Data
             HttpClient client = new HttpClient();
             if (string.IsNullOrEmpty(authorizationKey))
             {
-                authorizationKey = await client.GetStringAsync(Url + "login");
+                authorizationKey = await client.GetStringAsync(Url + "/login");
                 authorizationKey = JsonConvert.DeserializeObject<string>(authorizationKey);
             }
 
