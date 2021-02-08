@@ -39,7 +39,8 @@ namespace BookService.Controllers
 
             isbn = isbn.ToUpperInvariant();
             Console.WriteLine($"GET /api/books/{isbn}");
-            Book book = UserBooks.SingleOrDefault(x => x.ISBN == isbn);
+            var userBooks = UserBooks;
+            var book = userBooks.SingleOrDefault(x => x.ISBN == isbn);
 
             if (book == null)
             {
@@ -75,7 +76,9 @@ namespace BookService.Controllers
                 Console.WriteLine($"PUT /api/books/{isbn}");
                 Console.WriteLine(JsonSerializer.Serialize(book));
 
-                var existingBook = UserBooks.SingleOrDefault(x => x.ISBN == isbn);
+
+                var userBooks = UserBooks;
+                var existingBook = userBooks.SingleOrDefault(x => x.ISBN == isbn);
                 if (existingBook != null)
                 {
                     existingBook.Authors = book.Authors;
@@ -117,12 +120,19 @@ namespace BookService.Controllers
                     return new HttpResponseMessage(HttpStatusCode.BadRequest);
                 }
 
-                if (UserBooks.Any(x => x.ISBN == book.ISBN))
+                var userBooks = UserBooks;
+
+                if(userBooks.Count >= 10)
+                {
+                    return new HttpResponseMessage(HttpStatusCode.TooManyRequests);
+                }
+
+                if (userBooks.Any(x => x.ISBN == book.ISBN))
                 {
                     return new HttpResponseMessage(HttpStatusCode.Conflict);
                 }
 
-                UserBooks.Add(book);
+                userBooks.Add(book);
 
                 var json = JsonSerializer.Serialize(book);
                 
@@ -155,14 +165,15 @@ namespace BookService.Controllers
                     return new HttpResponseMessage(HttpStatusCode.Unauthorized);
                 }
 
-                var existingBook = UserBooks.SingleOrDefault(x => x.ISBN == isbn);
+                var userBooks = UserBooks;
+                var existingBook = userBooks.SingleOrDefault(x => x.ISBN == isbn);
 
                 if (existingBook == null)
                 {
                     return new HttpResponseMessage(HttpStatusCode.NotFound);
                 }
                 Console.WriteLine($"POST /api/books/{isbn}");
-                UserBooks.RemoveAll(x => x.ISBN == isbn);
+                userBooks.RemoveAll(x => x.ISBN == isbn);
 
                 return new HttpResponseMessage(HttpStatusCode.OK);
             }
