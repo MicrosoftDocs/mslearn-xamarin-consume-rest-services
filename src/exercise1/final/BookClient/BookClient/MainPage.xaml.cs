@@ -45,7 +45,7 @@ namespace BookClient
             finally
             {
                 IsBusy = false;
-            }            
+            }
         }
 
         async void OnAddNewBook(object sender, EventArgs e)

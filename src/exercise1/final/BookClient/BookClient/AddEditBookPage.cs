@@ -102,7 +102,7 @@ namespace BookClient
                 }
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 await this.DisplayAlert("Error",
                         ex.Message,
@@ -116,4 +116,3 @@ namespace BookClient
         }
     }
 }
-
