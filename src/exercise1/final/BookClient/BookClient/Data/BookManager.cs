@@ -4,12 +4,14 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Xamarin.Essentials;
 
 namespace BookClient.Data
 {
     public class BookManager
     {
-        const string Url = "{Url from before}/api/books/";
+        static readonly string BaseAddress = "{Url from before}";
+        static readonly string Url = $"{BaseAddress}/api/books/";
         private string authorizationKey;
 
         private async Task<HttpClient> GetClient()
@@ -17,7 +19,7 @@ namespace BookClient.Data
             HttpClient client = new HttpClient();
             if (string.IsNullOrEmpty(authorizationKey))
             {
-                authorizationKey = await client.GetStringAsync(Url + "login");
+                authorizationKey = await client.GetStringAsync(Url + "/login");
                 authorizationKey = JsonConvert.DeserializeObject<string>(authorizationKey);
             }
 

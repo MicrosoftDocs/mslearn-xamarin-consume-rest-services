@@ -65,7 +65,6 @@ namespace BookClient
         {
             Button button = (Button) sender;
             button.IsEnabled = false;
-            this.IsBusy = true;
             try
             {
                 string title = titleCell.Text;
@@ -76,13 +75,13 @@ namespace BookClient
                     || string.IsNullOrWhiteSpace(author)
                     || string.IsNullOrWhiteSpace(genre))
                 {
-                    this.IsBusy = false;
                     await this.DisplayAlert("Missing Information",
                         "You must enter values for the Title, Author, and Genre.",
                         "OK");
                 }
                 else
                 {
+                    IsBusy = true;
                     if (existingBook != null)
                     {
                         existingBook.Title = title;
@@ -96,16 +95,22 @@ namespace BookClient
                     }
                     else
                     {
-                        Book book = await manager.Add(title, author, genre);
+                        var book = await manager.Add(title, author, genre);
                     }
 
                     await Navigation.PopModalAsync();
                 }
 
             }
+            catch (Exception ex)
+            {
+                await this.DisplayAlert("Error",
+                        ex.Message,
+                        "OK");
+            }
             finally
             {
-                this.IsBusy = false;
+                IsBusy = false;
                 button.IsEnabled = true;
             }
         }
