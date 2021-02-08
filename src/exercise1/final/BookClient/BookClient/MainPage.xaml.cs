@@ -10,9 +10,6 @@ using Xamarin.Forms;
 
 namespace BookClient
 {
-    // Learn more about making custom code visible in the Xamarin.Forms previewer
-    // by visiting https://aka.ms/xamarinforms-previewer
-    [DesignTimeVisible(true)]
     public partial class MainPage : ContentPage
     {
         readonly IList<Book> books = new ObservableCollection<Book>();
@@ -26,13 +23,29 @@ namespace BookClient
 
         async void OnRefresh(object sender, EventArgs e)
         {
-            var bookCollection = await manager.GetAll();
+            if (IsBusy)
+                return;
 
-            foreach (Book book in bookCollection)
+            try
             {
-                if (books.All(b => b.ISBN != book.ISBN))
-                    books.Add(book);
+                IsBusy = true;
+                var bookCollection = await manager.GetAll();
+                foreach (Book book in bookCollection)
+                {
+                    if (books.All(b => b.ISBN != book.ISBN))
+                        books.Add(book);
+                }
             }
+            catch (Exception ex)
+            {
+                await this.DisplayAlert("Error",
+                        ex.Message,
+                        "OK");
+            }
+            finally
+            {
+                IsBusy = false;
+            }            
         }
 
         async void OnAddNewBook(object sender, EventArgs e)
@@ -49,16 +62,30 @@ namespace BookClient
 
         async void OnDeleteBook(object sender, EventArgs e)
         {
-            MenuItem item = (MenuItem)sender;
-            Book book = item.CommandParameter as Book;
-            if (book != null)
+            var item = (MenuItem)sender;
+            var book = item.CommandParameter as Book;
+            if (book == null || IsBusy)
+                return;
+
+            if (await this.DisplayAlert("Delete Book?",
+                "Are you sure you want to delete the book '"
+                    + book.Title + "'?", "Yes", "Cancel") == true)
             {
-                if (await this.DisplayAlert("Delete Book?",
-                    "Are you sure you want to delete the book '"
-                        + book.Title + "'?", "Yes", "Cancel") == true)
+                try
                 {
+                    IsBusy = true;
                     await manager.Delete(book.ISBN);
                     books.Remove(book);
+                }
+                catch (Exception ex)
+                {
+                    await this.DisplayAlert("Error",
+                            ex.Message,
+                            "OK");
+                }
+                finally
+                {
+                    IsBusy = false;
                 }
             }
         }
