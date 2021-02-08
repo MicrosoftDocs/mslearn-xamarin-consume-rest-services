@@ -6,13 +6,18 @@ namespace BookService.Models
 {
     public static class BookFactory
     {
+        static object locker = new object();
         public static Dictionary<string, Tuple<DateTime,List<Book>>> Books = new Dictionary<string, Tuple<DateTime,List<Book>>>();
 
         public static void Initialize(string authorizationToken)
         {
-            Books.Add(authorizationToken, 
-                Tuple.Create(DateTime.Now.AddHours(60), DefaultBooks.ToList()));
+            lock (locker)
+            {
+                Books.Add(authorizationToken,
+                    Tuple.Create(DateTime.UtcNow.AddHours(1), DefaultBooks.ToList()));
+            }
         }
+
         private static IEnumerable<Book> DefaultBooks
         {
             get
@@ -62,13 +67,13 @@ namespace BookService.Models
 
         public static void ClearStaleData()
         {
-            var keys = Books.Keys.ToList();
-            foreach (var oneKey in keys)
+            lock (locker)
             {
-                Tuple<DateTime, List<Book>> result;
-                if (Books.TryGetValue(oneKey, out result))
+                var keys = Books.Keys.ToList();
+                foreach (var oneKey in keys)
                 {
-                    if (result.Item1 < DateTime.Now)
+                    if (Books.TryGetValue(oneKey, out Tuple<DateTime, List<Book>> result) &&
+                        result.Item1 < DateTime.UtcNow)
                     {
                         Books.Remove(oneKey);
                     }
