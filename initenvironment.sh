@@ -9,15 +9,11 @@
 #
 
 ## Start
-
 declare moduleName=consume-rest-services
 
 # GitHub
 echo "declaring variables"
 gitrepo=https://github.com/MicrosoftDocs/mslearn-xamarin-consume-rest-services
-
-# dotnet SDK version
-declare -x dotnetSdkVersion="3.1.406"
 
 # Figure out the name of the resource group to use
 declare resourceGroupName=""
@@ -42,9 +38,7 @@ echo "Using Azure resource group $resourceGroupName."
 webappname=mslearnbookserver$RANDOM$RANDOM
 
 git clone $gitrepo
-
 cd mslearn-xamarin-consume-rest-services/src/webservice/BookServer
-
 az webapp up -n $webappname --resource-group $resourceGroupName --sku FREE --plan $webappname
 
 echo "Web app deployed! Here is the url to use in the app:"
