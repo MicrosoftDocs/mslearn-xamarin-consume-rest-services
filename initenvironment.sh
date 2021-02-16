@@ -15,7 +15,6 @@ declare moduleName=consume-rest-services
 # GitHub
 echo "declaring variables"
 gitrepo=https://github.com/MicrosoftDocs/mslearn-xamarin-consume-rest-services
-gitpath=src/webservice/BookServer/BookServer.csproj
 
 # dotnet SDK version
 declare -x dotnetSdkVersion="3.1.406"
@@ -41,17 +40,12 @@ echo "Using Azure resource group $resourceGroupName."
 
 # Azure
 webappname=mslearnbookserver$RANDOM$RANDOM
-echo "Creating app service plan"
-az appservice plan create --name $webappname --resource-group $resourceGroupName --sku FREE
 
-echo "creating web app"
-az webapp create --name $webappname --resource-group $resourceGroupName --plan $webappname
+git clone $gitrepo
 
-echo "Configuring web app"
-az webapp config appsettings set -g $resourceGroupName -n $webappname --settings PROJECT=$gitpath
+cd mslearn-xamarin-consume-rest-services/src/webservice/BookServer
 
-echo "Deploying web app"
-az webapp deployment source config --name $webappname --resource-group $resourceGroupName --repo-url $gitrepo --branch master --manual-integration
+az webapp up -n $webappname --resource-group $resourceGroupName --sku FREE --plan $webappname
 
 echo "Web app deployed! Here is the url to use in the app:"
 echo https://$webappname.azurewebsites.net
